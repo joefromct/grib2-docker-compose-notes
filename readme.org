@@ -1,0 +1,52 @@
+I needed to process a grib2 weather file, and didn't want to try to compile
+PyNIO, and didn't really want to manage/install anaconda on an already
+python-littered system.
+
+* Here's what I did:
+** Check out the docker compose file.  It just pulls miniconda, and gives this a name running in docker.
+
+   Start that up.  It'll sit and wait for you to connect.  (We could have run
+   jupyter but I thought that was overkill.)
+
+   I probably could have used a straight docker file but was thinking i'd be
+   adding other things to the stack, if i was going to turn this into a web
+   service or something for request/response. (Post =grib2=, response would be =base64= encoded =Pandas.DataFrame=... maybe an lambda/azure function.)
+
+** Next I connected to the docker container with miniconda:
+
+   #+begin_src sh
+        docker exec -it grib2-test /bin/bash
+   #+end_src
+   (I put this into [[file:connect.sh]])
+
+   Should give you a prompt at the running container.
+
+** Update, upgrade, etc.
+
+    #+BEGIN_SRC sh
+    apt update
+    apt upgrade
+    #+END_SRC
+
+(see next section and also =./input/requirements.sh=)
+
+** Setup python bits.
+
+    #+BEGIN_SRC sh
+
+    # this takes awhile...
+    conda install -c anaconda xarray
+    conda install -c conda-forge pynio
+    conda install -c anaconda pandas
+    #conda install  cytoolz
+
+    #+END_SRC
+
+(I put this into a shell script at =./input/requirements.sh=)
+
+** Run =main.py=
+
+Next, I ran =/input/main.py=.
+
+I wrote this off-container; it's super simple.  Dumps a pickle file with the
+dataframe.

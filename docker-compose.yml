@@ -1,0 +1,16 @@
+version: "3"
+# More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
+services:
+  conda:
+    container_name: grib2-test
+    image:  continuumio/miniconda3:latest
+    # For DHCP it is recommended to remove these ports and instead add: network_mode: "host"
+    ports:
+      - "8888:8888/tcp"
+    environment:
+      TZ: 'America/New_York'
+    volumes:
+      - './input:/input:ro'
+      - './output:/output'
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
